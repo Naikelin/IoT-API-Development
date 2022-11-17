@@ -1,0 +1,47 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = "file:iot.db"
+}
+
+model admin {
+  username String @id
+  password String
+}
+
+model company {
+  id              Int    @id @default(autoincrement())
+  company_name    String
+  company_api_key String
+}
+
+model location {
+  company_id       Int
+  location_name    String  @id
+  location_country String
+  location_city    String
+  location_meta    String?
+}
+
+model sensor {
+  location_id     Int
+  sensor_id       Int     @id @default(autoincrement())
+  sensor_name     String
+  sensor_category String
+  sensor_meta     String?
+  sensor_api_key  String?
+}
+
+/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
+model sensor_data {
+  sensor_id          String
+  sensor_humedad     Float?
+  sensor_ph          Float?
+  sensor_luz         Float?
+  sensor_temperatura Float?
+
+  @@ignore
+}
