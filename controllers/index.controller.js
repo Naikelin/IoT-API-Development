@@ -43,7 +43,7 @@ const CreateUser = async (username, password) => {
 
 }
 
-const Test = async (request, response) => {
+const CreateAdmin = async (request, response) => {
   
   var username = request.body.username || undefined
   var password = request.body.password || undefined
@@ -74,5 +74,5 @@ const Test = async (request, response) => {
 }
 
 module.exports = {
-  Test,
+  CreateAdmin,
 }

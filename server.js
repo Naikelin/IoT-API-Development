@@ -14,7 +14,7 @@ app.use(
 )
 
 // ---ROUTES ---
-app.use('/', require('./routes/index.route'));
+app.use('/api/v1/', require('./routes/index.route'));
 
 
 // --- BINDING SERVER TO LOCALHOST:PORT
