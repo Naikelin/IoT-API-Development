@@ -37,11 +37,13 @@ model sensor {
 
 /// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model sensor_data {
-  sensor_id          String
-  sensor_humedad     Float?
-  sensor_ph          Float?
-  sensor_luz         Float?
-  sensor_temperatura Float?
+  sensor_id           String
+  sensor_humedad      Float?
+  sensor_ph           Float?
+  sensor_luz          Float?
+  sensor_temperatura  Float?
+  sensor_created_date Int
+  sensor_data_id      Int    @id @default(autoincrement())
 
   @@ignore
 }
