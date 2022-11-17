@@ -13,29 +13,33 @@ model admin {
 }
 
 model company {
-  id              Int    @id @default(autoincrement())
+  id              Int        @id @default(autoincrement())
   company_name    String
   company_api_key String
+  location        location[]
 }
 
 model location {
   company_id       Int
-  location_name    String  @id
+  location_name    String
   location_country String
   location_city    String
   location_meta    String?
+  location_id      Int      @id @default(autoincrement())
+  company          company  @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  sensor           sensor[]
 }
 
 model sensor {
   location_id     Int
-  sensor_id       Int     @id @default(autoincrement())
+  sensor_id       Int      @id @default(autoincrement())
   sensor_name     String
   sensor_category String
   sensor_meta     String?
   sensor_api_key  String?
+  location        location @relation(fields: [location_id], references: [location_id], onDelete: NoAction, onUpdate: NoAction)
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
 model sensor_data {
   sensor_id           String
   sensor_humedad      Float?
@@ -44,6 +48,4 @@ model sensor_data {
   sensor_temperatura  Float?
   sensor_created_date Int
   sensor_data_id      Int    @id @default(autoincrement())
-
-  @@ignore
 }
