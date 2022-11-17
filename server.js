@@ -1,19 +1,20 @@
 const express = require('express')
+const bodyParser = require('body-parser')
 
 const app = express()
 const port = 3000
 
 // --- MIDDLEWARES ---
 
-server.use(bodyParser.json())
-server.use(
+app.use(bodyParser.json())
+app.use(
   bodyParser.urlencoded({
     extended: true,
   })
 )
 
 // ---ROUTES ---
-server.use('/', require('./routes/index'));
+app.use('/', require('./routes/index.route'));
 
 
 // --- BINDING SERVER TO LOCALHOST:PORT
