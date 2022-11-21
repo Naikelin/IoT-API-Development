@@ -44,6 +44,37 @@ const isAuth = async (request, response, next) => {
     }
 };
 
+const getCompanyFromApiKey = async (ApiKey) => {
+  const companyId = await prisma.company.findFirst({
+  where: {
+    company_api_key: ApiKey,
+  },
+})
+  if(companyId.lenght === 0) return undefined
+  return companyId;
+}
+
+const checkApiKey = async (request, response, next) => {
+
+    request.body.companyId = undefined;
+
+    const companyApiKey = request.headers.authorization || undefined
+
+    if (!companyApiKey) {
+      response.status(401).json({message: 'Provide an API Key'});
+    }
+
+    let companyId = (await getCompanyFromApiKey(companyApiKey)).id;
+
+    if (!companyId) {
+      response.status(401).json({message: 'Provide a valid API Key'});
+    }
+
+    request.body.companyId = companyId;
+    return next();
+};
+
 module.exports = {
-  isAuth
+  isAuth,
+  checkApiKey
 }

@@ -26,7 +26,7 @@ model location {
   location_city    String
   location_meta    String?
   location_id      Int      @id @default(autoincrement())
-  company          company  @relation(fields: [company_id], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  company          company  @relation(fields: [company_id], references: [id], onDelete: Cascade, onUpdate: Cascade)
   sensor           sensor[]
 }
 
@@ -37,7 +37,7 @@ model sensor {
   sensor_category String
   sensor_meta     String?
   sensor_api_key  String?
-  location        location @relation(fields: [location_id], references: [location_id], onDelete: NoAction, onUpdate: NoAction)
+  location        location @relation(fields: [location_id], references: [location_id], onDelete: Cascade, onUpdate: Cascade)
 }
 
 model sensor_data {
