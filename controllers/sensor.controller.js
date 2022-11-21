@@ -105,8 +105,77 @@ const CreateSensor = async (req, res, next) => {
     }
 };
 
+const insertSensorState = async (req, res, next) => {
+    try {
+        const { sensorId, category, json_data } = req.body;
+        if (!api_key || !category || !json_data) res.status(401).json({message: 'Provide all params required in body'});
+        if (category === 'luz_t') {
+           json_data.map(async (item) => {
+                await prisma.sensor_data.create({
+                    data: {
+                        sensor_id: sensorId,
+                        category: category,
+                        sensor_luz: item.luz,
+                        sensor_temperatura: item.temperatura,
+                        sensor_created_date: parseInt(new Date().getTime()),
+                    },
+                });
+            });
+            res.status(201).json({message: `${json_data.length} Sensor state submited succesfully`});
+        } else if (category === 'hum_ph') {
+            json_data.map(async (item) => {
+                await prisma.sensor_data.create({
+                    data: {
+                        sensor_id: sensorId,
+                        category: category,
+                        sensor_humedad: item.humedad,
+                        sensor_ph: item.ph,
+                        sensor_created_date: parseInt(new Date().getTime()),
+                    },
+                });
+            });
+            res.status(201).json({message: `${json_data.length} Sensor state submited succesfully`});
+        } else {
+            res.status(403).json({message: 'Category not found'});
+        }
+    } catch (error) {
+        res.status(500).json({message: 'Error:' + error})
+        throw error;
+    }
+};
+
+const getSensorData = async (req, res, next) => {
+    try {
+        const { from, to, sensor_id } = req.query;
+        if (!from || !to || !sensor_id) res.status(401).json({message: 'Provide all params required in query'});
+        const sensorIds = JSON.parse(sensor_id);
+        const sensorData = await prisma.sensor_data.findMany({
+            where: {
+                sensor_id: {
+                    in: sensorIds,
+                },
+                sensor_created_date: {
+                    gte: parseInt(from),
+                    lte: parseInt(to),
+                }
+            },
+            orderBy: { 
+                sensor_created_date: 'asc',
+            },
+        });
+        res.status(200).json(sensorData);
+    } catch (error) {
+        res.status(500).json({message: 'Error:' + error})
+        throw error;
+    }
+};
+        
+
+
 module.exports = {
     GetAllSensor,
     GetSensorByName,
     CreateSensor,
+    insertSensorState,
+    getSensorData,
 }

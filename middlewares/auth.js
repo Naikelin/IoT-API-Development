@@ -54,6 +54,20 @@ const getCompanyFromApiKey = async (ApiKey) => {
   return companyId;
 }
 
+const getSensorFromApiKey = async (ApiKey) => {
+  const sensorId = await prisma.sensor.findFirst({
+    select: {
+      sensor_id: true,
+      sensor_category: true,
+    },
+    where: {
+      sensor_api_key: ApiKey,
+    },
+  })
+  if(!sensorId) return undefined
+  return sensorId;
+}
+
 const checkApiKey = async (request, response, next) => {
 
     request.body.companyId = undefined;
@@ -74,7 +88,29 @@ const checkApiKey = async (request, response, next) => {
     return next();
 };
 
+const checkSensorApiKey = async (request, response, next) => {
+
+  request.body.sensor_api_key = undefined;
+
+  const sensorApiKey = request.headers.authorization || undefined
+
+  if (!sensorApiKey) {
+    response.status(401).json({message: 'Provide a Sensor API Key'});
+  }
+
+  let sensorId = (await getSensorFromApiKey(sensorApiKey));
+
+  if (!sensorId) {
+    response.status(401).json({message: 'Provide a valid Sensor API Key'});
+  }
+
+  request.body.sensorId = sensorId.sensor_id;
+  request.body.category = sensorId.sensor_category;
+  return next();
+};
+
 module.exports = {
   isAuth,
-  checkApiKey
+  checkApiKey,
+  checkSensorApiKey,
 }

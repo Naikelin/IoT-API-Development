@@ -29,5 +29,7 @@ router.get('/get_location_name', auth.checkApiKey, locationController.GetLocatio
 router.post('/create_sensor', auth.checkApiKey, sensorController.CreateSensor)
 router.get('/get_sensors', auth.checkApiKey, sensorController.GetAllSensor)
 router.get('/get_sensor_name', auth.checkApiKey, sensorController.GetSensorByName)
+router.post('/set_sensor_data', auth.checkSensorApiKey, sensorController.insertSensorState)
+router.get('/get_sensor_data', auth.checkApiKey, sensorController.getSensorData)
 
 module.exports = router
