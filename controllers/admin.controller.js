@@ -17,6 +17,8 @@ const ValidateInput = (username, password) => {
   }
 }
 
+
+
 const CheckIfUserExists = async (username) => {
   let usersCount = await prisma.admin.count(
         {
@@ -46,6 +48,7 @@ const CreateAdmin = async (request, response) => {
   if ( validationInput ) {
     // Check if user exists
     let validationUserExists = await CheckIfUserExists(username)
+    
     if ( !validationUserExists ) {
       // Not exists another user
       let createUser = await CreateUser(username, password)

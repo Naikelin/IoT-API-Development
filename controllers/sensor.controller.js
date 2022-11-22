@@ -5,7 +5,7 @@ const prisma = new PrismaClient()
 
 /* FUNCTIONS */
 const CheckIfSensorExists = async (SensorName, LocationId) => {
-    let sensorCount = await prisma.location.count(
+    let sensorCount = await prisma.sensor.count(
         {
           where: {
             location_id: LocationId,
@@ -108,13 +108,12 @@ const CreateSensor = async (req, res, next) => {
 const insertSensorState = async (req, res, next) => {
     try {
         const { sensorId, category, json_data } = req.body;
-        if (!api_key || !category || !json_data) res.status(401).json({message: 'Provide all params required in body'});
+        if (!sensorId || !category || !json_data) res.status(401).json({message: 'Provide all params required in body'});
         if (category === 'luz_t') {
            json_data.map(async (item) => {
                 await prisma.sensor_data.create({
                     data: {
-                        sensor_id: sensorId,
-                        category: category,
+                        sensor_id: sensorId,                        
                         sensor_luz: item.luz,
                         sensor_temperatura: item.temperatura,
                         sensor_created_date: parseInt(new Date().getTime()),
@@ -126,8 +125,7 @@ const insertSensorState = async (req, res, next) => {
             json_data.map(async (item) => {
                 await prisma.sensor_data.create({
                     data: {
-                        sensor_id: sensorId,
-                        category: category,
+                        sensor_id: sensorId,                        
                         sensor_humedad: item.humedad,
                         sensor_ph: item.ph,
                         sensor_created_date: parseInt(new Date().getTime()),
@@ -149,7 +147,15 @@ const getSensorData = async (req, res, next) => {
         const { from, to, sensor_id } = req.query;
         if (!from || !to || !sensor_id) res.status(401).json({message: 'Provide all params required in query'});
         const sensorIds = JSON.parse(sensor_id);
+        console.log(sensorIds[0]);
         const sensorData = await prisma.sensor_data.findMany({
+            select: {
+                sensor_id: true,
+                sensor_temperatura: true,
+                sensor_luz: true,
+                sensor_humedad: true,
+                sensor_ph: true,                
+            },
             where: {
                 sensor_id: {
                     in: sensorIds,

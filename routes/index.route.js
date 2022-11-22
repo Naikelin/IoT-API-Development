@@ -13,7 +13,7 @@ const sensorController = require('../controllers/sensor.controller')
  *  post:
  *      description: Create a new admin
  */
-router.post('/create_admin', auth.isAuth, adminController.CreateAdmin)
+router.post('/create_admin', adminController.CreateAdmin)
 
 /* COMPANY ENDPOINTS */
 router.post('/create_company', auth.isAuth, companyController.CreateCompany)
@@ -29,7 +29,7 @@ router.get('/get_location_name', auth.checkApiKey, locationController.GetLocatio
 router.post('/create_sensor', auth.checkApiKey, sensorController.CreateSensor)
 router.get('/get_sensors', auth.checkApiKey, sensorController.GetAllSensor)
 router.get('/get_sensor_name', auth.checkApiKey, sensorController.GetSensorByName)
-router.post('/set_sensor_data', auth.checkSensorApiKey, sensorController.insertSensorState)
-router.get('/get_sensor_data', auth.checkApiKey, sensorController.getSensorData)
+router.post('/sensor_data', auth.checkSensorApiKey, sensorController.insertSensorState)
+router.get('/sensor_data', auth.checkApiKey, sensorController.getSensorData)
 
 module.exports = router

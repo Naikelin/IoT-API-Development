@@ -50,7 +50,7 @@ const getCompanyFromApiKey = async (ApiKey) => {
     company_api_key: ApiKey,
   },
 })
-  if(companyId.lenght === 0) return undefined
+  if(!companyId) return undefined
   return companyId;
 }
 
@@ -77,8 +77,10 @@ const checkApiKey = async (request, response, next) => {
     if (!companyApiKey) {
       response.status(401).json({message: 'Provide an API Key'});
     }
-
-    let companyId = (await getCompanyFromApiKey(companyApiKey)).id;
+    const apiKey = await getCompanyFromApiKey(companyApiKey)
+    console.log(apiKey)
+    if (!apiKey) response.status(401).json({message: 'The company id provided is not valid'});
+    let companyId = apiKey.id
 
     if (!companyId) {
       response.status(401).json({message: 'Provide a valid API Key'});
@@ -97,7 +99,6 @@ const checkSensorApiKey = async (request, response, next) => {
   if (!sensorApiKey) {
     response.status(401).json({message: 'Provide a Sensor API Key'});
   }
-
   let sensorId = (await getSensorFromApiKey(sensorApiKey));
 
   if (!sensorId) {
